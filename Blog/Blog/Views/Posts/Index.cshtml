@@ -1,0 +1,68 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Blog.Areas.Identity.Data
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@model IEnumerable<Blog.Models.Post>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="container">
+    <main role="main" class="pb-3">
+        </br>
+
+        @if (SignInManager.IsSignedIn(User))
+        {
+            @if (await UserManager.IsInRoleAsync(await UserManager.GetUserAsync(User), "Admin"))
+            {
+                <p><b><a asp-action="Create">Create New</a></b></p>
+            }
+        }
+        @foreach (var item in Model.Reverse())
+        {
+            <div class="blog_main">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="our_two_box">
+                                <div class="row d_flex">
+                                    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                                        <div class="our_img">
+                                            <figure><img src="~/images/blog/@Html.DisplayFor(modelItem => item.Image)" alt="#" /></figure>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                                        <div class="our_text_box">
+                                            <h3 class="awesome pa_wi">@Html.DisplayFor(modelItem => item.Title)</h3>
+                                            @Html.Raw(item.Body)
+                                            <br>
+                                            <p>@Html.DisplayFor(modelItem => item.DateCreated)</p>
+                                        </div>
+                                        <div>
+                                            <a asp-action="Details" asp-route-id="@item.Id">Read more</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        @if (await UserManager.IsInRoleAsync(await UserManager.GetUserAsync(User), "Admin"))
+                        {
+                            <div>
+                                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        }
+    </main>
+</div>
+
+
+
